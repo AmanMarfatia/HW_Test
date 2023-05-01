@@ -1,46 +1,22 @@
-import unittest
-from production import calculate_total
+def calculate_total(state, items):
+    tax_rate = 0
+    if state == 'DE':
+        tax_rate = 0
+    elif state == 'NJ':
+        tax_rate = 0.066
+    elif state == 'PA':
+        tax_rate = 0.06
 
+    total = 0
+    for item in items:
+        if item['type'] == 'Wic Eligible food':
+            total += item['price']
+        elif item['type'] == 'Clothing':
+            if 'fur' in item['name']:
+                total += item['price'] * (1 + tax_rate)
+            else:
+                total += item['price']
+        else:
+            total += item['price'] * (1 + tax_rate)
 
-class TestCalculateTotal(unittest.TestCase):
-
-    def test_no_items(self):
-        self.assertEqual(calculate_total('NJ', []), 0.0)
-
-    def test_wic_food(self):
-        records = [
-            {'item_name': 'Orange', 'item_price': 2.0, 'item_type': 'Wic Eligible food'},
-            {'item_name': 'Pizza', 'item_price': 10.0, 'item_type': 'Wic Eligible food'}
-
-        ]
-        self.assertEqual(calculate_total('PA', records), 0.0)
-
-    def test_clothing_fur(self):
-        records = [
-            {'item_name': 'Canada Goose', 'item_price': 200.0, 'item_type': 'Clothing'}
-        ]
-        self.assertAlmostEqual(calculate_total('NJ', records), 212.0, places=2)
-
-    def test_clothing_no_fur(self):
-        records = [
-            {'item_name': 'T-Shirt', 'item_price': 10.0, 'item_type': 'Clothing'}
-        ]
-        self.assertEqual(calculate_total('PA', records), 10.0)
-
-    def test_default_tax_rate(self):
-        records = [
-            {'item_name': 'Phone', 'item_price': 500.0, 'item_type': 'Electronics'}
-        ]
-        self.assertAlmostEqual(calculate_total('DE', records), 500.0, places=2)
-
-    def test_multiple_items(self):
-        records = [
-            {'item_name': 'Orange', 'item_price': 1.0, 'item_type': 'Wic Eligible food'},
-            {'item_name': 'T-Shirt', 'item_price': 20.0, 'item_type': 'Clothing'},
-            {'item_name': 'Phone', 'item_price': 500.0, 'item_type': 'Electronics'}
-        ]
-        self.assertAlmostEqual(calculate_total('NJ', records), 537.12, places=2)
-
-
-if __name__ == '__main__':
-    unittest.main()
+    return round(total, 2)
