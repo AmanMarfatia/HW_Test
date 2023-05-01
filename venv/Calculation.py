@@ -11,6 +11,7 @@ class TestCalculateTotal(unittest.TestCase):
         records = [
             {'item_name': 'Orange', 'item_price': 2.0, 'item_type': 'Wic Eligible food'},
             {'item_name': 'Pizza', 'item_price': 10.0, 'item_type': 'Wic Eligible food'}
+
         ]
         self.assertEqual(calculate_total('PA', records), 0.0)
 
